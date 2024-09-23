@@ -1,0 +1,121 @@
+Prerequisites
+AWS Account: If you don't have one, sign up for an AWS account.
+AWS EC2: This tutorial assumes you're using an Amazon EC2 instance for hosting.
+Basic knowledge: Understanding of SSH, Linux commands, and web development basics.
+Step 1: Launch an AWS EC2 Instance
+Go to EC2 Dashboard:
+
+Log into your AWS Management Console.
+Navigate to the EC2 service.
+Launch a new EC2 instance:
+
+Choose the Amazon Linux 2 AMI (or Ubuntu).
+Choose t2.micro (free tier eligible) for the instance type.
+Configure instance details:
+
+Key Pair:
+Create or select a key pair to access your instance later.
+Launch the instance:
+
+Set your desired number of instances (1 for this project).
+Leave other settings at their default values.
+
+Edit Networking setting:
+choose default VPC
+Enable auto Asign public IP
+
+Create/Configure security group:
+Allow the following ports:
+SSH (Port 22) for remote access.
+HTTP (Port 80) for Apache web traffic.
+Optional: HTTPS (Port 443) if using SSL later.
+>>>>Wait for the instance to start running and note the Public IP Address.<<<<
+
+>>>Step 2: Connect to Your EC2 Instance
+Open terminal (Linux/macOS) or use PuTTY (Windows).
+Connect to the instance using SSH:
+ssh -i /path-to-key.pem ec2-user@your-ec2-public-ip
+
+
+>>>Step 3: Install Apache (Ubuntu)
+Update your package manager:
+sudo apt update
+
+Install Apache:
+sudo apt install apache2 -y
+
+Start Apache and enable it to run on boot:
+sudo systemctl start apache2
+sudo systemctl enable apache2
+Verify Apache is running: Open your browser and navigate to http://<your-ec2-public-ip>. You should see the Apache default page.
+
+>>>Step 4: Install MySQL
+Install MySQL:
+sudo apt install mysql-server -y
+
+Start and enable MySQL:
+sudo systemctl start mysql
+sudo systemctl enable mysql
+
+Secure the installation: Run the security script to set up a root password and remove unnecessary defaults:
+sudo mysql_secure_installation
+Follow the prompts to secure your database (you'll be asked to set a root password, remove anonymous users, disallow root login remotely, and more).
+
+Log into MySQL:
+sudo mysql -u root -p
+Enter your root password to access the MySQL prompt.
+
+>>>Step 5: Install PHP
+Install PHP and necessary PHP modules:
+sudo apt install php libapache2-mod-php php-mysql -y
+
+Restart Apache to load PHP:
+sudo systemctl restart apache2
+
+Verify PHP is working: Create a test phpinfo() file to ensure PHP is installed correctly:
+sudo vi /var/www/html/info.php
+
+Add the following content:
+
+<?php
+phpinfo();
+?>
+Save and exit. Then navigate to http://<your-ec2-public-ip>/info.php in your browser. You should see the PHP information page.
+
+>>>Step 6: Configure Apache to Work with PHP
+Set document root: Apache serves files from /var/www/html by default. Place your PHP project files in this directory.
+
+Edit Apache configuration file (optional): If necessary, edit the Apache configuration file to ensure index.php is recognized as the default file:
+sudo nano /etc/apache2/mods-enabled/dir.conf
+
+Modify the DirectoryIndex line to include index.php as the first option:
+DirectoryIndex index.php index.html index.cgi index.pl index.xhtml index.htm
+Save and exit.
+
+Restart Apache to apply the changes:
+sudo systemctl restart apache2
+
+>>>Step 7: Create a MySQL Database
+Login to MySQL:
+sudo mysql -u root -p
+
+Create a database:
+CREATE DATABASE my_project_db;
+
+Create a MySQL user and grant privileges:
+CREATE USER 'my_user'@'localhost' IDENTIFIED BY 'your_password';
+GRANT ALL PRIVILEGES ON my_project_db.* TO 'my_user'@'localhost';
+FLUSH PRIVILEGES;
+
+Exit MySQL:
+exit
+
+Step 8: Deploy Your PHP Application
+Upload your PHP files:
+
+Use SCP or SFTP tools to upload your PHP files into /var/www/html/.
+
+Change file permissions (if necessary):
+sudo chown -R www-data:www-data /var/www/html
+sudo chmod -R 755 /var/www/html
+Test your application: Navigate to http://<your-ec2-public-ip>/ to view your PHP application.
