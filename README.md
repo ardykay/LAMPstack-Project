@@ -101,9 +101,9 @@ AWS EC2: This tutorial assumes you're using an Amazon EC2 instance for hosting t
 
 3. Secure the installation: Run the security script to set up a root password and remove unnecessary defaults:
     -Follow the prompts to secure your database (you'll be asked to set a root password, remove anonymous users, disallow root login remotely, and more).
-   '''bash
+    ```bash
    sudo mysql_secure_installation
-   '''
+    ```
    
 4. Log in to MySQL to ensure it works:
    -You will be prompt to Enter your root password to access the MySQL prompt.
@@ -128,8 +128,12 @@ AWS EC2: This tutorial assumes you're using an Amazon EC2 instance for hosting t
    ```bash
    sudo systemctl restart apache2
    ```
-###At this point the LAMP Stack is completely install and fully operational.
-###To test your setup with a php script it is better to set up a proper Apache Virtual Host to hold your website file and folder.
+### At this point the LAMP Stack is completely install and fully operational.
+ You can now view your site on your browser paste your public-IP as <http://Public-IP>
+ 
+   ![test php](https://github.com/user-attachments/assets/64c7cc2e-1dc4-480a-99ea-f64713f96134)
+### To test your setup with a php script it is better to set up a proper Apache Virtual Host to hold your website file and folder.
+   
 
 ### Step 7: Set Up Virtual Hosts 
 Document root: Apache serves files from /var/www/html by default. Place your PHP project files in this directory. We will leave this document as it is and add our own project directory next to the default one.
@@ -139,18 +143,20 @@ Document root: Apache serves files from /var/www/html by default. Place your PHP
    sudo mkdir /var/www/lampStack-project
    ```
  ** Next assign the ownership of the directory with the $USER environment variable which will refrence your current system user**
+ 
    '''bash
       sudo chown -R $USER:$USER /var/www/lampStack-project
    '''
 
 2. Create a new virtual host configuration file in Apache :
-   Using Vi editor 
+   Using Vi editor
+   
    ```bash
    sudo vi /etc/apache2/sites-available/lampStack-project.conf
    ```
-   -This will open an editor that you can paste your content. To use vi editor
-   -Enter i to enter INSERT MODE where you are permitted to (edit and paste).
-   -Paste your content by left clicking,
+   - This will open an editor that you can paste your content. 
+   - Enter i to enter INSERT MODE where you are permitted to (edit and paste).
+   - Paste your content by left clicking,
    
    
 4. Add the following content to configure the virtual host:
@@ -164,7 +170,7 @@ Document root: Apache serves files from /var/www/html by default. Place your PHP
        CustomLog ${APACHE_LOG_DIR}/access.log combined
    </VirtualHost>
    ```
-    -then enter <esc :wq> to save and exit
+    - then enter <esc :wq> to save and exit
    
 6. Enable the virtual host:
    ```bash
@@ -178,15 +184,16 @@ Document root: Apache serves files from /var/www/html by default. Place your PHP
   ```bash
   sudo systemctl reload apache2
   ```
-  ![Index html Test page](https://github.com/user-attachments/assets/82529e67-ee93-419a-acba-0f7c8f3e1766)
+  
 
-  ##The Website is mow active, but the web root is empty.
+  ## The Website is now active, but the web root is empty.
 
   **Verify PHP is working**: Create a test phpinfo() file to ensure PHP is installed correctly:
   
-  '''bash
+   ```bash
   sudo vi /var/www/html/info.php
-  '''
+   ```
+
   Add the following content:
   
   ```php
@@ -207,9 +214,10 @@ Document root: Apache serves files from /var/www/html by default. Place your PHP
    ```bash
    vi index.html
    ```
+   
   then paste the html contents below. 
 
-'''html
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -239,8 +247,9 @@ Document root: Apache serves files from /var/www/html by default. Place your PHP
     <p>Implementing a LAMP stack on an AWS EC2 instance</p>
 </body>
 </html>
-'''
+```
 
-The page looks like After serving my content from the root
+## The page looks like this After serving my content from the web root
+
 ![Final page](https://github.com/user-attachments/assets/07af3ebd-5cd7-4b17-b2b6-d74027cff664)
 
